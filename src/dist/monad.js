@@ -174,9 +174,6 @@ const wait2 = x => {
      || typeof z === 'string' || z instanceof Array)
     //if (!bool(x)) x = ret(x);
   function bind (x, arr=[]) {
-    var bool = z => (z instanceof Monad || z instanceof Monad2 || z instanceof Promise
-     || typeof z === 'string' || z instanceof Array)
-    if (!bool(x)) x = ret(x);
     this.ar = arr;
     this.ar.push(x instanceof Monad || x instanceof Monad2 ? x.x : x)
     if (this.ar.length === 0) this.ar = [x];
@@ -186,7 +183,7 @@ const wait2 = x => {
         var p = x.then(v => func(v instanceof Monad2  ? v.x : v));
         return bind(p,this.ar);
       }
-      if (x instanceof Monad || x instanceof Monad2) return bind(func(x.x),this.ar);
+      // if (x instanceof Monad || x instanceof Monad2) return bind(func(x.x),this.ar);
       // Asynchronous functionality without Promises. Begin:
       if (typeof func === 'string' && func.slice(0,3) === "mMZ") {
         console.log('In bind() func.slice(0,3) === \"mMZ\" ' );
@@ -204,14 +201,14 @@ const wait2 = x => {
         var p = func(...x);
         return bind(p, this.ar);
       };
-        var p = func(x);
-        return bind(p, this.ar);
+      var p = func(x);
+      return bind(p, this.ar);
 
     };
   };
 
 var it4 = x => {
-  if (socket.readyState === 1) socket.send('BB#$42,pMgroup,pMname,' + x);
+  if (socket.readyState === 1) socket.send(`BB#$42,${pMgroup.x},${pMoldName.x},${x}`);
   return eval("mMZ37.bnd(mMZ37.bnd(y => y),ar)");
 }
 
@@ -224,8 +221,6 @@ m42_RESULT = m42_RESULT.concat(h('p', orange, v[3] + v[0] + v[4] + v[5]).text).c
 m42_RESULT2 = m42_RESULT2.concat(h('div', [h('p', orange, v[3] + v[0] + v[4] + v[5]).text]))
 });
   //'The prime factors of ' + v[0] + ' are ' + v[1]);
-
-
 const prm4 = x => {
   if (socket.readyState === 1) socket.send('BB#$42,pMgroup,pMname,' + x);
   return new Promise( (resolve, reject) => {

@@ -527,7 +527,7 @@
       console.log('&&&&&>>> >> in factors2action$. e is', e );
       var factors = [];
       mMfactors3.ret('');
-      bind(50)(cubeC)(it4)(it6)(it7);
+      bind(50)(a=>a*a*a)(it4)(it6)(it7);
     });
 
   const workerG$ = sources.WWG.map(m => {
@@ -1033,7 +1033,7 @@ h('img.image_2', {props: {src: "logo.svg" }}  ),
 h('span', ' ' ),
 h('a', { props: { href: "https://cycle.js.org/", target: "_blank" } }, 'A Cycle.js application')    ]),
 h('div', {style: {textAlign:"center", fontWeight: "bold"}}, [
-h('div', {style: {fontSize: "27px", color: "#f7f700"}}, 'FUNCTIONAL REACTIVE PROGRAMMING'),
+h('div', {style: {fontSize: "27px", color: "#f7f700"}}, 'FUNCTIONAL PROGRAMMING'),
 h('br'),
 h('div', {style: {fontSize: "22px", fontStyle: "italic", color: "#07f7f7"}},'WITH CYCLE.JS' ) ]),
 h('br'),
@@ -1328,11 +1328,14 @@ h('pre', {style: {color: "lightBlue"}}, `  function bind (x, arr=[]) {
 h('p', ' As is apparent from the definition, bind() is recursive and completely polymorphic. If bind()\'s argument is not a promise, an instance of Monad, an instance of Monad2, or a string, it gets encapsulated in an anonymous monad and bind() returns "bind(func(ret(x)),this.ar)" which returns the function named "debug8". '),
 h('p', ' The function ret() returns an instance of Monad2, which is like instances of Monad but without an id. Anonymous Monad2 instances are insulated from their outer scopes, eliminating the possibility of clashes with other processes. But plain values without the monadic wrappers would be just as insulated, so ret() is likely to be removed in the next revision. '),
 h('p', ' The definition of bind() speaks for itself more articulately the following description, but for what it\'s worth, here it is:  Let "p" be any value, "ar", "ar2", and "ar3" be arrays, func() and func2() be sychronous functions. bind(p,ar)(func)(func2) -> debug8(func)(func2) -> bind(func(p,ar),ar2)(func2) -> debug8(func(p,ar,ar2)(func2) -> bind(func2(func(p,ar),ar2),ar3) -> debug8 ready to continue the chain. ' ),
-h('p', ' Arrays are treated as argument lists in bind. If you want an array to be treated as an array, you cam put it in quotation marks and then use JSON.parse to remove the quotation marks inside the function that needs it. Here is an example: '),
+h('p', ' Arrays are treated as argument lists in bind. If you want an array to be recognized as a single argument, you cam put the array in quotation marks and then use JSON.parse or eval to remove the quotation marks when it is inside the function. Here is an example: '),
 h('pre',  `  bind("[1,2,3,4,5]")(v => R.reduce((a,b)=>a*b)
   (1)(JSON.parse(v)))(b=>(b/10)+30)(terminate)[2]  // 42  ` ),
-h('p',   ' Another way of getting an array argument to a function is to send it in an object like this: '), h('pre', `  bind({a: [5,6,7]})(q => R.reduce((a,b)=>a*b)
+h('p',   ' Another way to get an array to be recognezed as a single argument is to make it a property an object like this: '), h('pre', `  bind({a: [5,6,7]})(q => R.reduce((a,b)=>a*b)
   (1)(q.a))(p=>p/5)(terminate)[2]  // 42 `),
+h('p',   '  The simplest to get a function to recognize an array as a single argument is to send the array to the function encapsulated in an anonymous monad, say "m", and then call the function with "m.x". Here\'s what I mean: '),
+h('pre', `  bind(ret([5,6,7]))(x => R.reduce((a,b)=>a*b)
+  (1)(x.x))(p=>p/5)(terminate)  // [ [5,6,7], 210, 42] `),
 h('a', {props: {href: '#content2'}}, 'Back to the preview demos'),
 h('p', ' bind() facilitates the linking together of dissimilar functions. Synchronous functions, promises, and asynchronous functions that use MonadItter instead of the Promises API. Examples of the latter can be seen in upcomming demonstrations. In the functions below, the suffix "C" is for curried functions that return Monad2 instances with integer values. Functions that return Promises that resolve into integers after two seconds have the "P" suffix. format() presents the value of "x" in (p.then(x" and "m.x" for all promises "p" and monads "m" '),
 h('pre', `  bind(1)(addP(2))(cubeC)(addC(3))
@@ -1370,21 +1373,19 @@ h('br'),
 h('div', m42_RESULT ),
 h('p', ' The definitions of it4(), it6(), and it(7) are: '),
 h('pre', `  var it4 = x => {
-    if (socket.readyState === 1) {
-      socket.send('BB#$42,pMgroup,pMname,' + x);
-      return eval("mMZ37.bnd(mMZ37.bnd(y => y),ar)");
-    }
+    if (socket.readyState === 1) socket.send(\`BB#$42,\${pMgroup.x},\${x}\`);
+    return eval("mMZ37.bnd(mMZ37.bnd(y => y),ar)");
   }
 
   var it6 = x => {
     mMZ37.bnd(x => workerG.postMessage([primesMonad.s, [x]]));
-    mMZ38.bnd(v => mMZ39.release(v));
   }
 
-  var it7 = v => mMZ39.bnd( v => {
-    m42_RESULT.unshift(h('p', orange,
-    'The prime factors of ' + v[0] + v[4] + v[5]));
-  }); `),
+  var it7 = v => mMZ38.bnd( v => {
+    m42_RESULT = m42_RESULT.concat(h('p', orange, v[3] + v[0] + v[4] + v[5]).text).concat(h('br'))
+    m42_RESULT2 = m42_RESULT2.concat(h('div', [h('p', orange, v[3] + v[0] + v[4] + v[5]).text]))
+  });  `),
+
 h('p', ' "h(\'div\', m42_RESULT)" is a permanent fixture in the Snabbdom virtual DOM that is returned by main() and updated by calcStream$. When it7() executes, Sbabbdom performs its diff and render routine, updating the browser window. '),
 h('p', ' The asynchronous functions use MonadItter instances mMZ37, mMZ38, and mMZ39 instead of Promises. Here\'s the definition of MonadItter: '),
 h('pre', `  var MonadItter = function MonadItter() {
@@ -2133,18 +2134,20 @@ else if "GN#$42" \`T.isPrefixOf\` msg
     h('p#itx', ' When sources.WS hears a message prefixed by "BB#$42", MonadIterator instance mMZ27 is released. It releases mMZ37 with the number returned by the server (v[3]). it4() releases mMZ37 in it6, passing the number from the server to it. it6() sends the number to a web worker that sends back the number\'s prime decomposition. Here\'s the code: ' ),
 
     h('a', {props: {href: '#top'}}, 'Back to the top'),
-    h('pre', `  var it4 = x => {
-      if (socket.readyState === 1) socket.send('BB#$42,pMgroup,pMname,' + x);
-      return eval("mMZ37.bnd(mMZ37.bnd(y => y),ar)");
-    }
 
-    var it6 = x => {
-      mMZ37.bnd(x => workerG.postMessage([primesMonad.s, [x]]));
-      mMZ38.bnd(v => mMZ39.release(v));
-    }
-    var it7 = v => mMZ39.bnd( v => {
-      m42_RESULT.unshift(h('p', orange, v[3] + v[0] + v[4] + v[5]));
-    })  `),
+h('pre', `  var it4 = x => {
+    if (socket.readyState === 1) socket.send(\`BB#$42,\${pMgroup.x},\${x}\`);
+    return eval("mMZ37.bnd(mMZ37.bnd(y => y),ar)");
+  }
+
+  var it6 = x => {
+    mMZ37.bnd(x => workerG.postMessage([primesMonad.s, [x]]));
+  }
+
+  var it7 = v => mMZ38.bnd( v => {
+    m42_RESULT = m42_RESULT.concat(h('p', orange, v[3] + v[0] + v[4] + v[5]).text).concat(h('br'))
+    m42_RESULT2 = m42_RESULT2.concat(h('div', [h('p', orange, v[3] + v[0] + v[4] + v[5]).text]))
+  });  `),
 
     h('h3', 'MonadItter'),
     h('p', ' The MonadItter section of the page has a detailed discussion and live demonstrations. This is the definition: '),
